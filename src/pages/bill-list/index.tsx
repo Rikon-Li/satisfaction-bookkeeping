@@ -2,17 +2,23 @@
  * @Author: Ligen linhu.lg@alibaba-inc.com
  * @Date: 2024-10-27 22:01:21
  * @LastEditors: Ligen linhu.lg@alibaba-inc.com
- * @LastEditTime: 2024-10-28 01:25:18
+ * @LastEditTime: 2024-10-28 16:28:16
  * @FilePath: /satisfaction-bookkeeping/src/pages/bill-list/index.tsx
  * @Description: 账单列表
  */
 import { EllipsisOutlined, PlusOutlined } from "@ant-design/icons";
 import type { ActionType, ProColumns } from "@ant-design/pro-components";
-import { ProTable, TableDropdown } from "@ant-design/pro-components";
+import {
+  PageContainer,
+  ProTable,
+  TableDropdown,
+} from "@ant-design/pro-components";
 import { Button, Dropdown, Space, Tag } from "antd";
-import dynamic from "next/dynamic";
+// import dynamic from "next/dynamic";
 import React from "react";
 import { useRef } from "react";
+import { useRouter } from "next/navigation";
+
 // import request from "umi-request";
 
 export const waitTimePromise = async (time: number = 100) => {
@@ -157,15 +163,21 @@ const columns: ProColumns<GithubIssueItem>[] = [
   },
 ];
 
-const NoSSR = ({ children }: { children: React.ReactNode }) => {
-  return <React.Fragment>{children}</React.Fragment>;
-};
-const NoSSRComponent = dynamic(() => Promise.resolve(NoSSR), { ssr: false });
+// const NoSSR = ({ children }: { children: React.ReactNode }) => {
+//   return <React.Fragment>{children}</React.Fragment>;
+// };
+// const NoSSRComponent = dynamic(() => Promise.resolve(NoSSR), { ssr: false });
 
-const BillList = () => {
+export default function BillList() {
   const actionRef = useRef<ActionType>();
+  const router = useRouter();
+
   return (
-    <NoSSRComponent>
+    <PageContainer
+      header={{
+        ghost: true,
+      }}
+    >
       <ProTable<GithubIssueItem>
         columns={columns}
         actionRef={actionRef}
@@ -194,7 +206,9 @@ const BillList = () => {
         }}
         rowKey="id"
         search={{
-          labelWidth: "auto",
+          layout: "vertical",
+          defaultCollapsed: false,
+          span: 6,
         }}
         options={{
           setting: {
@@ -224,7 +238,7 @@ const BillList = () => {
             key="button"
             icon={<PlusOutlined />}
             onClick={() => {
-              actionRef.current?.reload();
+              router.push("/bill-add");
             }}
             type="primary"
           >
@@ -255,8 +269,8 @@ const BillList = () => {
           </Dropdown>,
         ]}
       />
-    </NoSSRComponent>
+    </PageContainer>
   );
-};
+}
 
-export default BillList;
+// export default BillList;
